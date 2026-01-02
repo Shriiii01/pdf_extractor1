@@ -37,9 +37,11 @@ async def extract_pdf(
     Upload a PDF file and extract all data from it.
     The extracted data will be saved to the database.
     """
-    # Validate file type
-    if not file.filename.lower().endswith('.pdf'):
-        raise HTTPException(status_code=400, detail="File must be a PDF")
+    # Validate file type (accept PDFs and images)
+    allowed_extensions = ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.heic', '.heif']
+    file_ext = os.path.splitext(file.filename.lower())[1]
+    if file_ext not in allowed_extensions:
+        raise HTTPException(status_code=400, detail="File must be a PDF or image file")
     
     # Save uploaded file temporarily
     with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_file:
